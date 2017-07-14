@@ -12,7 +12,7 @@ if [ -x nim/bin/nim ]; then
     if ! git merge FETCH_HEAD | grep "Already up-to-date"; then
         ./bin/nim c koch
         ./koch boot -d:release
-        ./kock nimble
+        ./koch nimble
     fi
 
 # Download nim from scratch and compile it
@@ -27,7 +27,7 @@ else
     rm -rf csources
     bin/nim c koch
     ./koch boot -d:release
-    ./kock nimble
+    ./koch nimble
 fi
 
 cd ..
