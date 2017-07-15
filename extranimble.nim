@@ -35,7 +35,7 @@ when not defined(baseFlags):
 
 proc compile(path: string, run: bool) =
     ## Compiles a file
-    exec "nimble c $# $# $# --out:$# $#" % [
+    exec "nimble -y c $# $# $# --out:$# $#" % [
         if run: "-r" else: "",
         flags.join(" "),
         baseFlags.join(" "),
