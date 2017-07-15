@@ -105,4 +105,20 @@ task all, "Runs all tasks":
 task clean, "Removes the build directory":
     exec "rm -r " & ("." / buildDir)
 
+# The content to put in the .travis.yml file
+const travisFile = """
+os: linux
+language: c
+install: bash <(curl -s https://raw.githubusercontent.com/Nycto/ExtraNimble/master/travis-setup.sh)
+before_script: export PATH="$HOME/Nim/bin:$PATH"
+script: nimble all
+sudo: false
+cache:
+  directories:
+    - $HOME/Nim
+"""
+
+task setup_travis, "Creates a .travis.yml integration file":
+    writeFile(".travis.yml", travisFile)
+
 
