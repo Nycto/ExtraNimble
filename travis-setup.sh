@@ -34,4 +34,4 @@ else
     compile
 fi
 
-ls $NIM_ROOT/nim/bin
+ls $NIM_ROOT/bin
