@@ -4,7 +4,7 @@ set -e
 set -o pipefail
 set -o xtrace
 
-pwd
+export NIM_ROOT=$HOME/Nim
 
 compile() {
     ./bin/nim c koch
@@ -13,9 +13,9 @@ compile() {
 }
 
 # If Nim and nimble are still cached from the last time
-if [ -x nim/bin/nim ]; then
+if [ -x $NIM_ROOT/bin/nim ]; then
 
-    cd nim
+    cd $NIM_ROOT
     git fetch origin
 
     test "$(git rev-parse HEAD)" == "$(git rev-parse @{u})" || compile
@@ -23,8 +23,8 @@ if [ -x nim/bin/nim ]; then
 # Download nim from scratch and compile it
 else
 
-    git clone -b devel --depth 1 git://github.com/nim-lang/nim nim
-    cd nim
+    git clone -b devel --depth 1 git://github.com/nim-lang/nim $NIM_ROOT
+    cd $NIM_ROOT
 
     git clone --depth 1 git://github.com/nim-lang/csources csources
     (cd csources && sh build.sh)
@@ -34,6 +34,4 @@ else
     compile
 fi
 
-cd ..
-
-ls ./nim/bin
+ls $NIM_ROOT/nim/bin
