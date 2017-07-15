@@ -4,6 +4,8 @@ set -e
 set -o pipefail
 set -o xtrace
 
+pwd
+
 compile() {
     ./bin/nim c koch
     ./koch boot -d:release
