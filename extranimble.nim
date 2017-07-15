@@ -6,12 +6,12 @@ when not defined(buildDir):
 
 assert(buildDir.strip != "", "buildDir must not be empty")
 
-# Locates a path relative to the build directory
 proc inBuildDir(path: string): string =
+    ## Locates a path relative to the build directory
     result = buildDir / path
 
-# Determines the output bin of a path
 proc outBin(path: string): string =
+    ## Determines the output bin of a path
     result = path.extractFilename.changeFileExt(ext = "").inBuildDir
 
 # Where to put the nim cache
@@ -33,8 +33,8 @@ when not defined(baseFlags):
         "--nimcache:$1" % [ nimCache ]
     ]
 
-# Compiles a file
 proc compile(path: string, run: bool) =
+    ## Compiles a file
     exec "nimble c $# $# $# --out:$# $#" % [
         if run: "-r" else: "",
         flags.join(" "),
@@ -43,29 +43,29 @@ proc compile(path: string, run: bool) =
         path
     ]
 
-# Lists nim files in a directory
 iterator nimFiles(dir: string): string =
+    ## Lists nim files in a directory
     for file in listFiles(dir):
         if file.endsWith(".nim"):
             yield file
 
-# Compiles any files in the root
-proc src() =
+template callTask(name: untyped) =
+    ## Invokes the nimble task with the given name
+    exec "nimble " & astToStr(name)
+
+task src, "Compiles source files":
     for file in nimFiles("."):
         compile(file, run = false)
 
-# Runs tests
-proc test() =
+task test, "Execute package tests":
     for file in nimFiles("test"):
         compile(file, run = true)
 
-# Compiles the bin files and runs them
-proc bin() =
+task bin, "Compiles and tests the 'bin' files":
     for file in nimFiles("bin"):
         compile(file, run = false)
 
-# Compiles the code in the readme
-proc readme() =
+task readme, "Compiles the code in the readme":
     let dir = "readme".inBuildDir
     exec "mkdir -p " & dir
     var blob = newSeq[string]()
@@ -84,23 +84,11 @@ proc readme() =
         elif within:
             blob.add(line)
 
-task src, "Compiles source files":
-    src()
-
-task test, "Execute package tests":
-    test()
-
-task bin, "Compiles and tests the 'bin' files":
-    bin()
-
-task readme, "Compiles the code in the readme":
-    readme()
-
 task all, "Runs all tasks":
-    src()
-    test()
-    bin()
-    readme()
+    callTask src
+    callTask test
+    callTask bin
+    callTask readme
 
 task clean, "Removes the build directory":
     exec "rm -r " & ("." / buildDir)
