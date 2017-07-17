@@ -92,7 +92,9 @@ task all, "Runs all tasks":
     callTask readme
 
 task clean, "Removes the build directory":
-    exec "rm -r " & ("." / buildDir)
+    let path = "." / buildDir
+    if fileExists(path):
+        exec "rm -r " & path
 
 # The content to put in the .travis.yml file
 const travisFile = """

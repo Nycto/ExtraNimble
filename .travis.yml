@@ -1,0 +1,7 @@
+os: linux
+language: c
+install: bash ./travis-setup.sh
+before_script: export PATH="$HOME/Nim/bin:$PATH"
+script: nimble test
+sudo: false
+
