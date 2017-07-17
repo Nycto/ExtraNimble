@@ -66,23 +66,24 @@ task bin, "Compiles and tests the 'bin' files":
         compile(file, run = false)
 
 task readme, "Compiles the code in the readme":
-    let dir = "readme".inBuildDir
-    exec "mkdir -p " & dir
-    var blob = newSeq[string]()
-    var within = false
-    var count = 1
-    for line in readFile("README.md").split("\n"):
-        if not within and line.startsWith("```nim"):
-            within = true
-        elif within and line.startsWith("```"):
-            let filename = dir / ("readme_" & $count & ".nim")
-            writeFile(filename, blob.join("\n"))
-            compile(filename, run = true)
-            inc(count)
-            blob.setLen(0)
-            within = false
-        elif within:
-            blob.add(line)
+    if fileExists("README.md"):
+        let dir = "readme".inBuildDir
+        exec "mkdir -p " & dir
+        var blob = newSeq[string]()
+        var within = false
+        var count = 1
+        for line in readFile("README.md").split("\n"):
+            if not within and line.startsWith("```nim"):
+                within = true
+            elif within and line.startsWith("```"):
+                let filename = dir / ("readme_" & $count & ".nim")
+                writeFile(filename, blob.join("\n"))
+                compile(filename, run = true)
+                inc(count)
+                blob.setLen(0)
+                within = false
+            elif within:
+                blob.add(line)
 
 task all, "Runs all tasks":
     callTask src
