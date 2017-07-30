@@ -18,7 +18,8 @@ You can get started by adding the following to the bottom of your 'nimble' file:
 
 ```
 exec "test -d .build/ExtraNimble || git clone https://github.com/Nycto/ExtraNimble.git .build/ExtraNimble"
-include ".build/ExtraNimble/extranimble.nim"
+when existsDir(thisDir() & "/.build"):
+    include ".build/ExtraNimble/extranimble.nim"
 ```
 
 Once that is done, you can run `nimble tasks` to see the targets that have been defined.
